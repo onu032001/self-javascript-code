@@ -1,6 +1,6 @@
 (() => {
-  const selfjs_current = (x => x.slice(x.indexOf("?")))(navigator.location.href);
-  const selfjs_params = new URLSearchParams(selfjs_current);
+  const selfjs_current = document.currentScript.src;
+  const selfjs_params = new URLSearchParams(new URL(selfjs_current).search);
   if (selfjs_params.has("expr")) {
     eval(selfjs_params.get("expr"));
   }

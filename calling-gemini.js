@@ -3,7 +3,7 @@ const API_KEY = '';
 async function askGemini(prompt, systemInstructions) {
     const payload = {
         contents: [{parts: [{text: prompt}]}],
-        systemInstruction: [{parts: [{text: systemInstructions}]}]
+        systemInstruction: {parts: [{text: systemInstructions}]}
     };
     
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${API_KEY}`;

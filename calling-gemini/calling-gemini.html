@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>suggest</title>
+    <style>
+        textarea {
+            width: 350px;
+            height: 250px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <textarea id="prompt"></textarea>
+    <button id="goButton">Go</button>
+    <p id="responseResult"></p>
+    <script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script>
+    <script>
+        const prompt = document.getElementById("prompt");
+        const goButton = document.getElementById("goButton");
+        const responseResult = document.getElementById("responseResult");
+        
+        // Use for safe purposes
+        const API_KEY = '';
+        async function askGemini(prompt, systemInstructions) {
+            const payload = {
+                contents: [{parts: [{text: prompt}]}],
+                systemInstruction: {parts: [{text: systemInstructions}]}
+            };
+            
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${API_KEY}`;
+            const options = {
+                method: 'POST',
+                contentType: 'application/json',
+                body: JSON.stringify(payload)
+            };
+        
+            const response = await fetch(url, options);
+            const data = await response.json();
+            // const content = data['candidates'][0]['content']['parts'][0]['text'];
+            const content = JSON.stringify(data);
+            return content;
+        }
+        
+        async function awaitResponse() {
+            try {
+                    responseResult.style.color = 'black';
+                const currentPrompt = prompt.value;
+                responseResult.innerText = "Asking Gemini...";
+                const response = await askGemini(currentPrompt, '');
+                responseResult.innerHTML = `<b>Done:<\/b> ${marked.parse(response)}`;
+            } catch (e) {
+                responseResult.style.color = 'red';
+                responseResult.innerText = e;
+            }
+        }
+        
+        goButton.addEventListener('click', awaitResponse);
+    </script>
+</body>
+</html>
